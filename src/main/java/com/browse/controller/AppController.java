@@ -184,7 +184,7 @@ public class AppController {
     }
 
     @RequestMapping(value = "/calculate")
-    public Object calculate(String bz, String price, Long num,String smell, HttpSession session) {
+    public Object calculate(String bz, String price, Long num,String smell, HttpSession session) throws Exception {
         return appService.calculate(bz, price, num, smell);
     }
 }

@@ -470,7 +470,6 @@
             var bz = $("#optionList option:selected").val()
             var price = $("#priceList option:selected").val()
             var smell = $("#smellList option:selected").val()
-            var num = $("input[name='number']").val()
             if (bz == '请选择'){
                 alert('请选择包装')
                 return
@@ -483,14 +482,10 @@
                 alert('请选择香型')
                 return
             }
-            if (!num){
-                alert('请填写数量')
-                return
-            }
+
             $.get('http://localhost:8088/calculate',{
                 bz:bz,
                 price: price,
-                num: num,
                 smell: smell
             }, function (res) {
                 $("#num").text(res).css("color","red")
@@ -594,11 +589,6 @@
                                                 <option value="浓香型">浓香型</option>
                                                 <option value="兼香型">兼香型</option>
                                             </select>
-                                        </div>
-                                        <div class="layui-inline" style="margin-top: 50px">
-                                            销售总量：
-                                            <input type="number" name="number" pattern="[0-9]*" inputmode="numeric"
-                                                   style="width: 200px"/>
                                         </div>
                                         <div style="width: 100% ;margin-top: 50px">
                                         <div style="height: 50px;width: 80px;
