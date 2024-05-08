@@ -1,0 +1,600 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>基于Hadoop的白酒销售分析系统</title>
+    <link href="web/css/css.css" rel="stylesheet" type="text/css"/>
+    <script src="js/jquery.js"></script>
+    <script src="js/ECharts.js"></script>
+    <script src='../js/echarts-wordcloud.js'></script>
+    <script src="js/echarts-wordcloud.js"></script>
+    <script src="web/js/laydate/laydate.js"></script>
+    <script type="text/javascript">
+        function getPackAgeSales() {
+            // 基于准备好的dom，初始化echarts图表
+            var myChart = echarts.init(document.getElementById('main'));
+            myChart.clear();
+            $.get('http://localhost:8088/getPackAgeSales', function (res) {
+                var option = {
+                    color: ['#2f89cf'],
+                    title: {
+                        text: '包装类型销量分析',
+                        x: 'center'
+                    },
+                    // 提示框组件
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    // 修改图表位置大小
+                    grid: {
+                        left: '0%',
+                        top: '10px',
+                        right: '0%',
+                        bottom: '4%',
+                        containLabel: true
+                    },
+                    // x轴相关配置
+                    xAxis: [{
+                        type: 'category',
+                        data: res.key,
+                        axisTick: {
+                            alignWithLabel: true
+                        },
+                        // 修改刻度标签，相关样式
+                        axisLabel: {
+                            fontSize: 10
+                        },
+                        // x轴样式不显示
+                        axisLine: {
+                            show: false
+                        }
+                    }],
+                    // y轴相关配置
+                    yAxis: [{
+                        type: 'value',
+                        // 修改刻度标签，相关样式
+                        axisLabel: {
+                            fontSize: 12
+                        },
+                        // y轴样式修改
+                        axisLine: {
+                            lineStyle: {
+                                width: 2
+                            }
+                        }
+                    }],
+                    // 系列列表配置
+                    series: [{
+                        name: '总销量',
+                        type: 'bar',
+                        barWidth: '35%',
+                        // ajax传动态数据
+                        data: res.val,
+                        itemStyle: {
+                            // 修改柱子圆角
+                            barBorderRadius: 5
+                        }
+                    }]
+                };
+                // 3.把配置项给实例对象
+                myChart.setOption(option);
+            });
+        }
+
+        function getGenresSales() {
+            var myChart = echarts.init(document.getElementById('main'));
+            myChart.clear();
+            $.get('http://localhost:8088/getGenresSales', function (res) {
+                var option = {
+                    title: {
+                        text: '不同类型的销量',
+                        x: 'center'
+                    },
+                    // 修改两条线的颜色
+                    color: ['#00f2f1', '#ed3f35'],
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    // 图例组件
+                    legend: {
+                        // 当serise 有name值时， legend 不需要写data
+                        // 修改图例组件文字颜色
+                        textStyle: {
+                            color: '#4c9bfd'
+                        },
+                        right: '10%',
+                    },
+                    grid: {
+                        top: "20%",
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true,
+                        show: true, // 显示边框
+                        borderColor: '#012f4a' // 边框颜色
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false, // 去除轴间距
+                        data: res.key,
+                        // 去除刻度线
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            color: "#4c9bfb" // x轴文本颜色
+                        },
+                        axisLine: {
+                            show: false // 去除轴线
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        // 去除刻度线
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel: {
+                            color: "#4c9bfb" // x轴文本颜色
+                        },
+                        axisLine: {
+                            show: false // 去除轴线
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: "#012f4a"
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'line',
+                        smooth: true, // 圆滑的线
+                        name: '总销量',
+                        data: res.val
+                    }
+                    ]
+                };
+                // 3.把配置项给实例对象
+                myChart.setOption(option);
+            });
+        }
+
+        function getPriceSales() {
+            const myChart = echarts.init(document.getElementById('main'));
+            myChart.clear();
+            $.get('http://localhost:8088/getPriceSales', function (res) {
+                var option = {
+                    title: {
+                        text: '不同价格区间对应的销售量',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left'
+                    },
+                    series: [
+                        {
+                            name: '销量',
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            avoidLabelOverlap: false,
+                            itemStyle: {
+                                borderRadius: 10,
+                                borderColor: '#fff',
+                                borderWidth: 2
+                            },
+                            label: {
+                                show: false,
+                                position: 'center'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: 10,
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: false
+                            },
+                            data: res
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+            });
+        }
+
+        function getPriceSalesTotal() {
+            const myChart = echarts.init(document.getElementById('main'));
+            myChart.clear();
+            $.get('http://localhost:8088//getPriceSalesTotal', function (res) {
+                var option = {
+                    title: {
+                        text: '不同价格区间对应的销售额',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left'
+                    },
+                    series: [
+                        {
+                            name: '销售额',
+                            type: 'pie',
+                            radius: '50%',
+                            data: res,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                myChart.setOption(option);
+            });
+        }
+
+        function getShopSalesTop10() {
+            var myChart = echarts.init(document.getElementById('main'));
+            myChart.clear();
+            $.get('http://localhost:8088/getShopSalesTop10', function (res) {
+                var option = {
+                    title: {
+                        text: '各个店铺销量TOP10',
+                        x: 'center'
+                    },
+                    color: ['#2f89cf'],
+                    // 提示框组件
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    // 修改图表位置大小
+                    grid: {
+                        left: '0%',
+                        top: '10px',
+                        right: '0%',
+                        bottom: '4%',
+                        containLabel: true
+                    },
+                    // x轴相关配置
+                    xAxis: [{
+                        type: 'category',
+                        data: res.key,
+                        axisTick: {
+                            alignWithLabel: true
+                        },
+                        // 修改刻度标签，相关样式
+                        axisLabel: {
+                            fontSize: 10
+                        },
+                        // x轴样式不显示
+                        axisLine: {
+                            show: false
+                        }
+                    }],
+                    // y轴相关配置
+                    yAxis: [{
+                        type: 'value',
+                        // 修改刻度标签，相关样式
+                        axisLabel: {
+                            fontSize: 12
+                        },
+                        // y轴样式修改
+                        axisLine: {
+                            lineStyle: {
+                                width: 2
+                            }
+                        }
+                    }],
+                    // 系列列表配置
+                    series: [{
+                        name: '购买人数',
+                        type: 'bar',
+                        barWidth: '35%',
+                        // ajax传动态数据
+                        data: res.val,
+                        itemStyle: {
+                            // 修改柱子圆角
+                            barBorderRadius: 5
+                        }
+                    }]
+                };
+                myChart.setOption(option);
+            });
+        }
+
+        function getWordCount() {
+            var myChart = echarts.init(document.getElementById('main'));
+            myChart.clear();
+            $.get('http://localhost:8088/getWordCount', function (res) {
+                // 2.指定配置项和数据
+                var option = {
+                    title: {
+                        text: '销售标题词云分析',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        show: true
+                    },
+                    series: [{
+                        type: "wordCloud",
+                        gridSize: 6,
+                        shape: 'diamond',
+                        sizeRange: [6, 35],
+                        width: 800,
+                        height: 500,
+                        textStyle: {
+                            normal: {
+                                color: function () {
+                                    return 'rgb(' + [
+                                        Math.round(Math.random() * 160),
+                                        Math.round(Math.random() * 160),
+                                        Math.round(Math.random() * 160)
+                                    ].join(',') + ')';
+                                }
+                            },
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        data: res
+                    }]
+                };
+                // 3.把配置项给实例对象
+                myChart.setOption(option);
+            });
+        }
+
+        window.onload = function () {
+            getPackAgeSales();
+        }
+        $(document).ready(function () {
+            $('#getPackAgeSales').on('click', function () {
+                // 这里执行你的点击事件处理逻辑
+                getPackAgeSales();
+            });
+
+            $('#getGenresSales').on('click', function () {
+                // 这里执行你的点击事件处理逻辑
+                getGenresSales();
+            });
+
+            $('#getWordCount').on('click', function () {
+                // 这里执行你的点击事件处理逻辑
+                getWordCount();
+            });
+
+            $('#getPriceSales').on('click', function () {
+                // 这里执行你的点击事件处理逻辑
+                getPriceSales();
+            });
+
+            $('#getPriceSalesTotal').on('click', function () {
+                // 这里执行你的点击事件处理逻辑
+                getPriceSalesTotal();
+            });
+
+            $('#getShopSalesTop10').on('click', function () {
+                // 这里执行你的点击事件处理逻辑
+                getShopSalesTop10();
+            });
+            $('#preditAnalyse').on('click', function () {
+                preditSale();
+            })
+
+            $(".list_one").on('click', '.list_one_li', function () {
+                $(".list_one_li").removeClass("list_on");
+                $(this).addClass("list_on")
+            })
+            $("#calculate").on('click',function (){
+                calculate()
+            })
+        });
+
+        function updatePassword() {
+            var value = $("#myPut").val();
+            if (!value) {
+                return;
+            }
+            var name = localStorage.getItem("keyName");
+            $.get('http://localhost:8088/updatePassword', {
+                userName: name, //对方用户ID
+                password: value
+            }, function (res) {
+                if (res === true) {
+                    window.location.replace("/");
+                }
+
+            });
+        }
+
+        function showDialog() {
+            $("#updatePassword").css("display", "block")
+        }
+
+        function predit() {
+            $("#analyse").css("display", "none")
+            $("#preditAnalyse").css("display", "block")
+            preditSale()
+        }
+
+        function analyse() {
+            $("#preditAnalyse").css("display", "none")
+            $("#analyse").css("display", "block")
+
+            $("#main1").css("display", "none");
+            $("#main").css("display", "block")
+            getPackAgeSales()
+        }
+
+        function preditSale() {
+            $("#main1").css("display", "block");
+            $("#main").css("display", "none")
+        }
+
+        function calculate(){
+            var bz = $("#optionList option:selected").val()
+            var price = $("#priceList option:selected").val()
+            var num = $("input[name='number']").val()
+            if (bz == '请选择'){
+                alert('请选择包装')
+                return
+            }
+            if (price == '请选择'){
+                alert('请选择价格区间')
+                return
+            }
+            if (!num){
+                alert('请填写数量')
+                return
+            }
+            $.get('http://localhost:8088/calculate',{
+                bz:bz,
+                price: price,
+                num: num
+            }, function (res) {
+                $("#num").text(res).css("color","red")
+                alert(res)
+            })
+        }
+    </script>
+</head>
+<body>
+<div class="box">
+    <div>
+        <img src="web/img/bg_01.jpg" width="980" height="33"/>
+    </div>
+    <div class="middle">
+        <div style="display: flex;flex-direction: row;justify-content: space-between;">
+            <ul class="list_one">
+                <li class="list_on list_one_li" data-tabindex="1"><a href="#" onclick="analyse()">统计分析</a></li>
+                <li class="list_one_li" data-tabindex="2"><a href="/web">可视化大屏</a></li>
+                <li class="list_one_li" data-tabindex="3"><a href="#" onclick="predit()">预测分析</a></li>
+            </ul>
+            <span style="margin-right: 80px;color:white;cursor: pointer" onclick="showDialog()">修改密码</span>
+        </div>
+        <ul class="list_two clear" id="analyse">
+            <li id="getPackAgeSales">包装销量分析</li>
+            <li id="getGenresSales">不同类型销量</li>
+            <li id="getWordCount">标题词云分析</li>
+            <li id="getPriceSales">价格销量分析</li>
+            <li id="getPriceSalesTotal">价格销售分析</li>
+            <li id="getShopSalesTop10">店铺销量统计</li>
+        </ul>
+        <ul class="list_two clear" id="preditAnalyse" style="display: none">
+            <li id="preditSale">预测分析</li>
+        </ul>
+        <div style="margin-left:14px;">
+            <img src="web/img/bd01.jpg" width="945" height="13"
+                 style="*float:left;"/>
+            <div class="box_middle">
+                <form method="post">
+                    <table width="729" border="0" cellspacing="0" cellpadding="0" class="table_list">
+                        <tr>
+                            <td width="115" height="63" align="center" valign="middle"></td>
+                            <td width="104" align="center" valign="middle"></td>
+                            <td width="274" align="left" valign="middle">
+                            </td>
+                            <td width="50">
+                            </td>
+                        </tr>
+                        <tr align="center" width="800" valign="middle">
+                            <td colspan="5">
+                                <div id="main" style="height:400px"></div>
+                                <div id="main1" style="height: 400px; display: none">
+                                    <div style="display:flex;flex-direction: column;justify-content: center">
+                                        <div class="layui-inline">
+                                            选择包装：
+                                            <select id="optionList" style="width: 100px">
+                                                <option>请选择</option>
+                                                <option value="盒装">盒装</option>
+                                                <option value="礼盒装">礼盒装</option>
+                                                <option value="箱装">箱装</option>
+                                                <option value="裸瓶装">裸瓶装</option>
+                                                <option value="坛装">坛装</option>
+                                                <option value="桶装">桶装</option>
+                                            </select>
+                                        </div>
+                                        <div class="layui-inline" style="margin-top: 50px">
+                                            选择价格：
+                                            <select id="priceList" style="width: 100px">
+                                                <option>请选择</option>
+                                                <option value="价格：100~200">价格：100~200</option>
+                                                <option value="价格：500~1000">价格：500~1000</option>
+                                                <option value="价格：200~500">价格：200~500</option>
+                                                <option value="价格：0~100">价格：0~100</option>
+                                                <option value="价格：1000以上">价格：1000以上</option>
+                                            </select>
+                                        </div>
+                                        <div class="layui-inline" style="margin-top: 50px">
+                                            销售总量：
+                                            <input type="number" name="number" pattern="[0-9]*" inputmode="numeric"
+                                                   style="width: 200px"/>
+                                        </div>
+                                        <div style="width: 100% ;margin-top: 50px">
+                                        <div style="height: 50px;width: 80px;
+                                        background-color: #0f55c5;
+                                        border-radius: 5px;
+                                        text-align: center;
+                                        align-content: center;
+                                        color: whitesmoke;
+                                        cursor: pointer"
+                                        id="calculate">
+                                            计算
+                                        </div>
+                                        </div>
+                                        <div class="layui-inline" style="margin-top: 50px">
+                                            当前所选规格销售量：
+                                            <span id="num" style="font-size: 24px">待计算</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="147" colspan="5" align="center" valign="middle">大数据可视化</td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            <img src="web/img/bd03.jpg" width="945" height="13"/>
+        </div>
+    </div>
+    <div>
+        <img src="web/img/bg_05.jpg" width="980" height="44"/>
+    </div>
+    <dialog open style="position: absolute;left: 40%;top: 30%;width: 300px;height: 200px;padding: 10px; display: none"
+            id="updatePassword">
+        <div style="display: flex;flex-direction: column;justify-content: center;height: 100%;width: 100%">
+            <h3>修改密码</h3>
+            <div>
+                <input style="width:100%; height: 30px" type="text" value="" placeholder="请输入密码" id="myPut"/>
+            </div>
+            <div style="align-content: center;text-align: center;margin-top: 40px;height: 50px;width: 100%;background-color: #0f55c5;
+border-radius: 5px;color: whitesmoke;cursor: pointer" onclick="updatePassword()">
+                确认修改密码
+            </div>
+        </div>
+    </dialog>
+</div>
+</body>
+</html>

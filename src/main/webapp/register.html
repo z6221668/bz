@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+    <link rel='stylesheet' href='css/bootstrap.min.css'>
+    <script src="js/jquery.js"></script>
+</head>
+<body>
+<div id="login_frame">
+
+    <!-- <p id="image_logo"><img src="images/login/fly.png"></p>-->
+    <p id="image_logo">基于Hadoop的白酒销售分析系统用户注册</p>
+
+    <form method="post" action="">
+
+        <label class="label_input">用户名</label>
+        <input type="text" name="username" id="inputEmail3" class="text_field"/>
+        <label class="label_input">密码</label>
+        <input type="password" name="password" id="inputPassword3" class="text_field"/>
+        <label class="label_input">确认密码</label>
+        <input type="password" name="password1" id="inputPassword4" class="text_field"/>
+
+        <div id="login_control" style="margin-top:5px;text-align: center">
+            <input type="button" class="btn_login" id="submit" value="注册"/>
+            <input type="button" class="btn_reg" id="reg" value="返回登录"/>
+        </div>
+    </form>
+</div>
+
+</body>
+<style>
+    body {
+        background-image: url("images/background.png");
+        background-size: 100%;
+        background-repeat: no-repeat;
+    }
+
+    #login_frame {
+        width: 400px;
+        height: 320px;
+        padding: 13px;
+
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -200px;
+        margin-top: -200px;
+
+        background-color: rgba(240, 255, 255, 0.5);
+
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    form p > * {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+    #image_logo {
+        margin-top: 22px;
+    }
+
+    .label_input {
+        font-size: 14px;
+        font-family: 宋体;
+
+        width: 65px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+
+        margin-top: 23px;
+        color: white;
+        background-color: #3CD8FF;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    }
+
+    .text_field {
+        padding-left: 10px;
+        width: 278px;
+        height: 28px;
+
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+        border: 0;
+    }
+
+    .btn_reg {
+        font-size: 14px;
+        font-family: 宋体;
+
+        width: 120px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+
+        color: white;
+        background-color: powderblue;
+        border-radius: 6px;
+        border: 0;
+
+        float: right;
+    }
+
+    .btn_login {
+        font-size: 14px;
+        font-family: 宋体;
+
+        width: 120px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+
+        color: white;
+        background-color: #3BD9FF;
+        border-radius: 6px;
+        border: 0;
+
+        float: left;
+    }
+
+    #forget_pwd {
+        font-size: 12px;
+        color: white;
+        text-decoration: none;
+        position: relative;
+        float: right;
+        top: 5px;
+
+    }
+
+    #forget_pwd:hover {
+        color: blue;
+        text-decoration: underline;
+    }
+
+    #login_control {
+        padding: 0 28px;
+        padding-top: 30px;
+    }
+</style>
+<script>
+    $(function () {
+        $("#submit").click(function () {
+            var url = "http://localhost:8088/user";
+            var params = {
+                "username": $("input[type='text']").val(),
+                "password": $("#inputPassword3").val(),
+                "password1": $("#inputPassword4").val()
+            };
+
+            $.ajax({
+                "url": url,
+                "data": params,
+                "type": "post",
+                "success": function (data) {
+                    // 参数为json类型的对象
+                    if (data === "success") {
+                        window.location.href = "/";
+                    } else {
+                        alert(data);
+                    }
+                },
+                "error": function () {
+                    alert("服务器异常错误");
+                }
+            });
+
+        });
+    });
+    $(document).ready(function () {
+        $("#reg").click(function () {
+            window.location.href = "/";
+        });
+    });
+</script>
+
+</html>

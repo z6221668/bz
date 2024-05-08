@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>基于Hadoop的白酒销售分析系统</title>
+    <link rel="stylesheet" href="css/index.css"/>
+</head>
+<body>
+<!-- 头部 -->
+<header>
+    <h1><a href="/predict" style="color: inherit; text-decoration: none;">基于Hadoop的白酒销售分析系统</a></h1>
+    <div class="show-time"></div>
+    <script>
+        var t = null;
+        t = setTimeout(time, 1000); //开始运行
+        function time() {
+            clearTimeout(t); //清除定时器
+            dt = new Date();
+            var y = dt.getFullYear();
+            var mt = dt.getMonth() + 1;
+            var day = dt.getDate();
+            var h = dt.getHours(); //获取时
+            var m = dt.getMinutes(); //获取分
+            var s = dt.getSeconds(); //获取秒
+            document.querySelector(".show-time").innerHTML =
+                "当前时间：" + y + "年" + mt + "月" + day + "日-" + h +
+                "时" + m + "分" + s + "秒";
+            t = setTimeout(time, 1000); //设定定时器，循环运行
+        }
+    </script>
+</header>
+
+<!-- 页面主体 -->
+<section class="mainbox">
+    <!-- 左侧盒子 -->
+    <div class="column">
+        <div class="panel bar">
+            <h2>包装类型销量分析</h2>
+            <!-- 图表放置盒子 -->
+            <div class="chart"></div>
+            <!-- 伪元素绘制盒子下边角 -->
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel line">
+            <h2>不同类型的销量</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel pie">
+            <h2>不同价格区间对应的销售额</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+    </div>
+    <!-- 中间盒子 -->
+    <div class="column">
+        <!-- 头部 no模块 -->
+        <div class="no">
+            <div class="no-hd">
+                <ul>
+                    <li>欢迎</li>
+                    <li>登录</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- map模块 -->
+        <div class="map">
+            <div class="map1"></div>
+            <div class="map2"></div>
+            <div class="map3"></div>
+            <div class="chart"></div>
+        </div>
+    </div>
+    <!-- 右侧盒子 -->
+    <div class="column">
+        <div class="panel bar2">
+            <h2>销售标题词云分析</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel line2">
+            <h2>不同价格区间的销售量</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+        <div class="panel pie2">
+            <h2>各个店铺销量TOP10</h2>
+            <div class="chart"></div>
+            <div class="panel-footer"></div>
+        </div>
+
+    </div>
+</section>
+<section class="mainbox">
+    <script src="js/flexible.js"></script>
+
+    <script src="js/ECharts.js"></script>
+    <script src="js/jquery.js"></script>
+
+    <script src='../js/echarts-wordcloud.js'></script>
+    <!-- 引入china.js 完成地图模块 -->
+    <script src="js/china.js"></script>
+    <script src="js/hebei.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/echarts-wordcloud.js"></script>
+</section>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>白酒销售预测</title>
+    <link rel="stylesheet" href="layui-src/dist/css/layui.css">
+</head>
+
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo"></div>
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="/predict">白酒销售预测</a></li>
+            <li class="layui-nav-item"><a href="/web">返回大屏</a></li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="/">
+                    退出系统
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-body" style="padding: 20px; ">
+        <div class="demoTable">
+            选择商品类型：
+            <div class="layui-inline">
+                <input class="layui-input" name="userid" id="demoReload" autocomplete="off" type="text" list="typelist"
+                       placeholder="请选择">
+                <!--<input id="type" type="text" list="typelist" placeholder="请选择">-->
+                <datalist id="typelist">
+                    <option>10010</option>
+                    <option>10012</option>
+                    <option>10015</option>
+                    <option>10016</option>
+                    <option>10017</option>
+                    <option>10019</option>
+                    <option>10021</option>
+                    <option>10022</option>
+                    <option>10029</option>
+                </datalist>
+            </div>
+            <button class="layui-btn" data-type="reload">搜索</button>
+        </div>
+        <div id="map" style="height:600px;margin-left:90px;margin-top:70px"></div>
+        <!-- <table class="layui-hide" id="demo" lay-filter="menu-filter"></table> -->
+    </div>
+    <div class="layui-footer">
+    </div>
+</div>
+<script src="layui-src/dist/layui.js"></script>
+<script>
+</script>
+</body>
+
+</html>
+<script src="./public/echarts.common.min.js"></script>
+<script src="./data/gdps.js"></script>
+<script src="./jss/jquery.js"></script>
+<script>
+
+    $('.layui-btn').click(function () {
+        var inputVal = $('.layui-input').val()
+        $.get('http://localhost:8088/get45?city=' + inputVal, function (res) {
+            var top20Chart = echarts.init(document.getElementById('map'));
+            top20Chart.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: res.key,
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: '销量',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: res.val
+                    }
+                ]
+            });
+        });
+    })
+
+
+</script>
