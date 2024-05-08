@@ -60,16 +60,20 @@ public class AppService {
         appDao.updatePassword(username, password);
     }
 
-    public long calculate(String bz, String price, Long num) {
+    public long calculate(String bz, String price, Long num, String smell) {
         long bzNum = appDao.selectBzNum(bz);
         long totalNum = appDao.selectBzTotal();
         BigDecimal bzRation = new BigDecimal(bzNum).divide(new BigDecimal(totalNum),2,RoundingMode.HALF_UP);
 
         long priceNum = appDao.selectPriceNum(price);
-        long priceTotal = appDao.selectBzTotal();
+        long priceTotal = appDao.selectPriceNumTotal();
         BigDecimal priceRatio = new BigDecimal(priceNum).divide(new BigDecimal(priceTotal),2,RoundingMode.HALF_UP);
 
-        BigDecimal ration = (bzRation.add(priceRatio)).divide(new BigDecimal("2"),2,RoundingMode.HALF_UP);
+        long smellNum = appDao.selectSmellNum(smell);
+        long smellNumTotal = appDao.selectSmellNumTotal();
+        BigDecimal smellRatio = new BigDecimal(smellNum).divide(new BigDecimal(smellNumTotal),2,RoundingMode.HALF_UP);
+
+        BigDecimal ration = (bzRation.add(priceRatio).add(smellRatio)).divide(new BigDecimal("3"),2,RoundingMode.HALF_UP);
 
         return new BigDecimal(num).multiply(ration).longValue();
     }

@@ -73,4 +73,16 @@ public interface AppDao {
 	 */
 	@Select("select sum(num) from demo8")
 	long selectPriceNumTotal();
+
+	/**
+	 * 获取香型数量
+	 */
+	@Select("select num from demo3 where name = #{smell}")
+	long selectSmellNum(@Param("smell")String smell);
+
+	/**
+	 * 获取香型数量
+	 */
+	@Select("select sum(num) from demo3 ")
+	long selectSmellNumTotal();
 }

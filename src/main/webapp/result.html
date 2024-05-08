@@ -367,6 +367,8 @@
             getPackAgeSales();
         }
         $(document).ready(function () {
+            $("#infoName").text(localStorage.getItem("keyName"))
+
             $('#getPackAgeSales').on('click', function () {
                 // 这里执行你的点击事件处理逻辑
                 getPackAgeSales();
@@ -407,6 +409,19 @@
             $("#calculate").on('click',function (){
                 calculate()
             })
+            document.getElementById("info").addEventListener("mouseover",function (){
+                $("#infoBox").css("display","block")
+            })
+            document.getElementById("info").addEventListener("mouseout",function (){
+                $("#infoBox").css("display","none")
+            })
+            document.getElementById("infoBox").addEventListener("mouseover",function (){
+                $("#infoBox").css("display","block")
+            })
+            document.getElementById("infoBox").addEventListener("mouseout",function (){
+                $("#infoBox").css("display","none")
+            })
+
         });
 
         function updatePassword() {
@@ -427,6 +442,7 @@
         }
 
         function showDialog() {
+            // $("#infoBox").css("display","block")
             $("#updatePassword").css("display", "block")
         }
 
@@ -453,6 +469,7 @@
         function calculate(){
             var bz = $("#optionList option:selected").val()
             var price = $("#priceList option:selected").val()
+            var smell = $("#smellList option:selected").val()
             var num = $("input[name='number']").val()
             if (bz == '请选择'){
                 alert('请选择包装')
@@ -462,6 +479,10 @@
                 alert('请选择价格区间')
                 return
             }
+            if (!smell=='请选择'){
+                alert('请选择香型')
+                return
+            }
             if (!num){
                 alert('请填写数量')
                 return
@@ -469,12 +490,14 @@
             $.get('http://localhost:8088/calculate',{
                 bz:bz,
                 price: price,
-                num: num
+                num: num,
+                smell: smell
             }, function (res) {
                 $("#num").text(res).css("color","red")
-                alert(res)
             })
         }
+
+
     </script>
 </head>
 <body>
@@ -483,13 +506,30 @@
         <img src="web/img/bg_01.jpg" width="980" height="33"/>
     </div>
     <div class="middle">
-        <div style="display: flex;flex-direction: row;justify-content: space-between;">
+        <div style="display: flex;flex-direction: row;justify-content: space-between; position:relative;">
             <ul class="list_one">
                 <li class="list_on list_one_li" data-tabindex="1"><a href="#" onclick="analyse()">统计分析</a></li>
                 <li class="list_one_li" data-tabindex="2"><a href="/web">可视化大屏</a></li>
                 <li class="list_one_li" data-tabindex="3"><a href="#" onclick="predit()">预测分析</a></li>
             </ul>
-            <span style="margin-right: 80px;color:white;cursor: pointer" onclick="showDialog()">修改密码</span>
+            <span style="margin-right: 80px;color:white;cursor: pointer" id="info">用户中心</span>
+            <div style="position: absolute;display: none;right: 80px;
+                    top: 20px;
+                    border-radius: 5px;
+                    height: 100px;
+                    width: 80px;
+                    background-color: whitesmoke"
+                 id="infoBox">
+                <div
+                style="display: flex;flex-direction: column">
+                    <span id="infoName" style="text-align: center;align-content: center;margin-top: 10px;color: #0f55c5"></span>
+                    <hr>
+                    <span onclick="showDialog()" style="text-align: center;align-content: center;margin-top: 10px;color: #0f55c5;cursor: pointer">修改密码</span>
+                    <hr>
+                    <span style="text-align: center;align-content: center;margin-top: 10px;color: #0f55c5"><a href="/">退出登录</a></span>
+
+                </div>
+            </div>
         </div>
         <ul class="list_two clear" id="analyse">
             <li id="getPackAgeSales">包装销量分析</li>
@@ -542,6 +582,17 @@
                                                 <option value="价格：200~500">价格：200~500</option>
                                                 <option value="价格：0~100">价格：0~100</option>
                                                 <option value="价格：1000以上">价格：1000以上</option>
+                                            </select>
+                                        </div>
+                                        <div class="layui-inline" style="margin-top: 50px">
+                                            选择香型：
+                                            <select id="smellList" style="width: 100px">
+                                                <option>请选择</option>
+                                                <option value="清香型">清香型</option>
+                                                <option value="酱香型">酱香型</option>
+                                                <option value="米香型">米香型</option>
+                                                <option value="浓香型">浓香型</option>
+                                                <option value="兼香型">兼香型</option>
                                             </select>
                                         </div>
                                         <div class="layui-inline" style="margin-top: 50px">

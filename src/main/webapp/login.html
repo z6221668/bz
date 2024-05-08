@@ -152,7 +152,6 @@
                     if (data === "success") {
                         var name = $("input[type='text']").val()
                         localStorage.setItem("keyName",name);
-                        alert(localStorage.getItem("keyName"))
                         window.location.href = "/result";
                     } else {
                         alert(data);
