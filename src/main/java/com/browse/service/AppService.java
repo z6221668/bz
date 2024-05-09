@@ -4,20 +4,20 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.browse.mapper.AppDao;
+import com.browse.utils.PreditUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import weka.classifiers.Evaluation;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
+import weka.experiment.InstanceQuery;
 
 @Service
 public class AppService {
@@ -77,16 +77,16 @@ public class AppService {
         RandomForest rf = new RandomForest();
         // 设置参数
         rf.setNumFeatures(100); // 设置决策树数量
-        rf.setSeed(1); // 设置随机种子
+        rf.setSeed(1); // 设置随机种
 
         // 创建一个新的实例，输入酒的类型（酒香型、酒箱型、酒价格区间）
         double[] values = new double[4];
         values[0] = bzNum;
         values[1] = priceNum;
         values[2] = smellNum;
-        values[3] = (bzNum+priceNum+smellNum) /3;
+        values[3] = (bzNum + priceNum + smellNum) / 3;
 
-        Instance inst = new DenseInstance(1.0,values);
+        Instance inst = new DenseInstance(1.0, values);
         // 创建属性集合（不包括类别属性）
         ArrayList<Attribute> attributes = createAttributes();
 
@@ -132,40 +132,37 @@ public class AppService {
     }
 
     public static void main(String[] args) throws Exception {
-        RandomForest rf = new RandomForest();
-        // 设置参数
-        rf.setNumFeatures(100); // 设置决策树数量
-        rf.setSeed(1); // 设置随机种子
-
-        // 创建一个新的实例，输入酒的类型（酒香型、酒箱型、酒价格区间）
-        double[] values = new double[4];
-        values[0] = 5.0;
-        values[1] = 3.5;
-        values[2] = 1.3;
-//        values[3] = 0.3;
-
-        Instance inst = new DenseInstance(1.0,values);
-        // 创建属性集合（不包括类别属性）
-        ArrayList<Attribute> attributes = createAttributes();
-
-        // 设置类别属性（酒销售数量）
-//        Attribute wineSales = attributes.get(3); // 类别属性索引应为2
-
-        // 创建Instances对象，并设置类别属性
-        Instances dataset = new Instances("TestInstances", attributes, 0);
-//        dataset.setClass(wineSales);
-
-        // 添加新实例到数据集
-        dataset.add(inst);
-        inst.setDataset(dataset);
-        // 设置类别索引
-        dataset.setClassIndex(dataset.numAttributes() - 1);
-
-        // 训练模型
-        rf.buildClassifier(dataset);
-
-        // 预测酒销售数量
-        double prediction = rf.classifyInstance(inst);
-        System.out.println("Predicted wine sales: " + prediction);
+//        RandomForest rf = new RandomForest();
+//        // 设置参数
+//        rf.setNumFeatures(100); // 设置决策树数量
+//        rf.setSeed(1); // 设置随机种子
+//        //输入数据模型
+//        ConverterUtils.DataSource dataSource = new ConverterUtils.DataSource("/Users/sxier/Desktop/data.arff");
+////        ConverterUtils.DataSource dataSource = new ConverterUtils.DataSource("classpath:data.arff");
+//
+//        Instances data = dataSource.getDataSet();
+//        //设置预测列
+//        data.setClassIndex(3);
+//        //跑模型
+//        rf.buildClassifier(data);
+//
+//        //输入当前所需预测数据中的其他数据（预测列输入与否都可以）
+//        double[] values = new double[6];
+//        values[0] = 3;
+//        values[1] = 2;
+//        values[2] = 2;
+//        values[3] = 4000;
+//        values[4] = 300;
+//        values[5] = 2;
+//        Instance inst = new DenseInstance(4.0, values);
+//        //将预测数据与 模型关联
+//        inst.setDataset(data);
+//        rf.classifyInstance(inst);
+//        //此处注释可筛选出对应列系数
+////        Evaluation eval = new Evaluation(data);
+////        eval.crossValidateModel(rf, data, 10, new Random(1));
+//        //输出对应的预测数据
+//        System.out.println("当前预测售价 " + rf.classifyInstance(inst));
+        System.out.println(PreditUtil.predit(1,1,1));
     }
 }
